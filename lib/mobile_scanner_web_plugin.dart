@@ -7,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mobile_scanner/src/web/jsqr.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
+import 'package:rxdart/rxdart.dart';
 
 import 'package:mobile_scanner/src/web/media.dart';
 
@@ -30,7 +31,7 @@ class MobileScannerWebPlugin {
   }
 
   // Controller to send events back to the framework
-  StreamController controller = StreamController();
+  StreamController controller = BehaviorSubject();
 
   // The video stream. Will be initialized later to see which camera needs to be used.
   html.MediaStream? _localStream;
