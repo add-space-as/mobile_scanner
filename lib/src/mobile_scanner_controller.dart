@@ -53,6 +53,8 @@ class MobileScannerController {
   CameraFacing facing;
   bool hasTorch = false;
   late StreamController<Barcode> barcodesController;
+  ValueNotifier<MobileScannerState> cameraState =
+      ValueNotifier(MobileScannerState.undetermined);
 
   Stream<Barcode> get barcodes => barcodesController.stream;
 
@@ -140,10 +142,13 @@ class MobileScannerController {
           break;
         case MobileScannerState.denied:
           isStarting = false;
+          cameraState.value = MobileScannerState.denied;
           throw PlatformException(code: 'NO ACCESS');
         case MobileScannerState.authorized:
           break;
       }
+
+      cameraState.value = state;
     }
 
     cameraFacingState.value = facing;
@@ -170,12 +175,14 @@ class MobileScannerController {
     } on PlatformException catch (error) {
       debugPrint('${error.code}: ${error.message}');
       isStarting = false;
+      cameraState.value = MobileScannerState.denied;
       // setAnalyzeMode(AnalyzeMode.none.index);
       return;
     }
 
     if (startResult == null) {
       isStarting = false;
+      cameraState.value = MobileScannerState.denied;
       throw PlatformException(code: 'INITIALIZATION ERROR');
     }
 
