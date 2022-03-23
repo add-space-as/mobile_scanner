@@ -143,7 +143,7 @@ class MobileScannerController {
         case MobileScannerState.denied:
           isStarting = false;
           cameraState.value = MobileScannerState.denied;
-          throw PlatformException(code: 'NO ACCESS');
+          return;
         case MobileScannerState.authorized:
           break;
       }
@@ -183,7 +183,7 @@ class MobileScannerController {
     if (startResult == null) {
       isStarting = false;
       cameraState.value = MobileScannerState.denied;
-      throw PlatformException(code: 'INITIALIZATION ERROR');
+      return;
     }
 
     hasTorch = startResult['torchable'];
