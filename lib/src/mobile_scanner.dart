@@ -13,7 +13,7 @@ class MobileScanner extends StatefulWidget {
   ///
   /// [barcode] The barcode object with all information about the scanned code.
   /// [args] Information about the state of the MobileScanner widget
-  final Function(Barcode barcode, MobileScannerArguments? args)? onDetect;
+  final Function(Barcode barcode, MobileScannerArguments? args) onDetect;
 
   /// TODO: Function that gets called when the Widget is initialized. Can be usefull
   /// to check wether the device has a torch(flash) or not.
@@ -28,13 +28,13 @@ class MobileScanner extends StatefulWidget {
   final bool allowDuplicates;
 
   /// Create a [MobileScanner] with a [controller], the [controller] must has been initialized.
-  const MobileScanner(
-      {Key? key,
-      this.onDetect,
-      this.controller,
-      this.fit = BoxFit.cover,
-      this.allowDuplicates = false})
-      : super(key: key);
+  const MobileScanner({
+    Key? key,
+    required this.onDetect,
+    this.controller,
+    this.fit = BoxFit.cover,
+    this.allowDuplicates = false,
+  }) : super(key: key);
 
   @override
   State<MobileScanner> createState() => _MobileScannerState();
@@ -47,7 +47,7 @@ class _MobileScannerState extends State<MobileScanner>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     controller = widget.controller ?? MobileScannerController();
   }
 
@@ -69,8 +69,9 @@ class _MobileScannerState extends State<MobileScanner>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, BoxConstraints constraints) {
-      return ValueListenableBuilder(
+    return LayoutBuilder(
+      builder: (context, BoxConstraints constraints) {
+        return ValueListenableBuilder(
           valueListenable: controller.args,
           builder: (context, value, child) {
             value = value as MobileScannerArguments?;
@@ -81,10 +82,10 @@ class _MobileScannerState extends State<MobileScanner>
                 if (!widget.allowDuplicates) {
                   if (lastScanned != barcode.rawValue) {
                     lastScanned = barcode.rawValue;
-                    widget.onDetect!(barcode, value as MobileScannerArguments);
+                    widget.onDetect(barcode, value! as MobileScannerArguments);
                   }
                 } else {
-                  widget.onDetect!(barcode, value as MobileScannerArguments);
+                  widget.onDetect(barcode, value! as MobileScannerArguments);
                 }
               });
               return ClipRect(
@@ -104,8 +105,10 @@ class _MobileScannerState extends State<MobileScanner>
                 ),
               );
             }
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -128,7 +131,7 @@ class _MobileScannerState extends State<MobileScanner>
   @override
   void dispose() {
     controller.dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 }
